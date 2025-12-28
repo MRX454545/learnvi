@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Neon Drift — Animated Cyberpunk Page</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg1: #0b0f19;
+      --bg2: #121a2f;
+      --neon1: #00ffd1;
+      --neon2: #ff3cac;
+      --neon3: #5b86e5;
+      --text: #e6f1ff;
+      --muted: #94a3b8;
+    }
+
+    /* Reset */
+    * { box-sizing: border-box; }
+    html, body { height: 100%; margin: 0; }
+    body {
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Ubuntu, Cantarell, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+      color: var(--text);
+      background: linear-gradient(120deg, var(--bg1), var(--bg2));
+      overflow: hidden;
+    }
+
+    /* Animated gradient backdrop */
+    .backdrop {
+      position: fixed; inset: 0;
+      background: radial-gradient(1200px 600px at 70% 20%, rgba(91,134,229,0.18), transparent 60%),
+                  radial-gradient(1000px 600px at 20% 80%, rgba(255,60,172,0.12), transparent 60%);
+      filter: saturate(1.2);
+      animation: pulse 10s ease-in-out infinite;
+      pointer-events: none;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.03); }
+    }
+
+    /* Glitch title */
+    .title {
+      position: relative;
+      font-weight: 800;
+      font-size: clamp(2rem, 6vw, 5rem);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      text-align: center;
+      margin: 8vh 0 2vh;
+      color: var(--text);
+      text-shadow:
+        0 0 12px rgba(255,255,255,0.1),
+        0 0 24px rgba(91,134,229,0.3);
+    }
+    .title::before,
+    .title::after {
+      content: attr(data-text);
+      position: absolute; inset: 0;
+      mix-blend-mode: screen;
+      filter: blur(0.5px);
+    }
+    .title::before { color: var(--neon2); transform: translate(-2px, -1px); }
+    .title::after  { color: var(--neon1); transform: translate(2px, 1px); }
+    .title.glitch {
+      animation: glitchShift 2.7s infinite;
+    }
+    @keyframes glitchShift {
+      0%, 9%, 11%, 100% { transform: none; }
+      10% { transform: translate(2px, -1px) skewX(1deg); }
+      55% { transform: translate(-1px, 1px) skewX(-1deg); }
+    }
+
+    /* Tagline */
+    .tagline {
+      text-align: center;
+      color: var(--muted);
+      font-size: clamp(0.9rem, 2.2vw, 1.2rem);
+      margin-bottom: 4vh;
+    }
+
+    /* Cards container */
+    .grid {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 20px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: clamp(16px, 2vw, 28px);
+    }
+    @media (max-width: 900px) {
+      .grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 600px) {
+      .grid { grid-template-columns: 1fr; }
+    }
+
+    /* Neon cards */
+    .card {
+      position: relative;
+      background: rgba(16, 22, 40, 0.65);
+      border: 1px solid rgba(148,163,184,0.15);
+      border-radius: 16px;
+      padding: 20px;
+      backdrop-filter: blur(6px) saturate(1.2);
+      overflow: hidden;
+      transition: transform 0.4s ease, box-shadow 0.4s ease;
+      will-change: transform;
+    }
+    .card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 10px 30px rgba(0, 255, 209, 0.08),
+                  0 6px 18px rgba(91, 134, 229, 0.08);
+    }
+    .card h3 {
+      margin: 8px 0 10px;
+      font-size: 1.2rem;
+      letter-spacing: 0.04em;
+    }
+    .card p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: 0.98rem;
+    }
+
+    /* Card neon edge */
+    .card::before {
+      content: "";
+      position: absolute; inset: -1px;
+      border-radius: 16px;
+      padding: 1px;
+      background: linear-gradient(135deg, rgba(0,255,209,0.25), rgba(255,60,172,0.25), rgba(91,134,229,0.25));
+      -webkit-mask: 
+        linear-gradient(#000 0 0) content-box, 
+        linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+
+    /* Floating orbs */
+    .orb {
+      position: fixed;
+      width: clamp(10px, 2vw, 14px);
+      height: clamp(10px, 2vw, 14px);
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #fff, var(--neon1) 40%, transparent 70%);
+      opacity: 0.5;
+      box-shadow: 0 0 20px var(--neon1), 0 0 40px var(--neon3);
+      mix-blend-mode: screen;
+      animation: float 12s ease-in-out infinite;
+      pointer-events: none;
+    }
+    .orb:nth-child(odd) { background: radial-gradient(circle at 30% 30%, #fff, var(--neon2) 40%, transparent 70%); }
+    @keyframes float {
+      0%   { transform: translate(0, 0); }
+      50%  { transform: translate(20px, -30px) scale(1.15); }
+      100% { transform: translate(0, 0); }
+    }
+
+    /* Bottom info bar */
+    .footer {
+      position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%);
+      color: var(--muted);
+      font-size: 0.9rem;
+      background: rgba(16, 22, 40, 0.55);
+      border: 1px solid rgba(148,163,184,0.12);
+      padding: 8px 14px;
+      border-radius: 12px;
+      backdrop-filter: blur(6px);
+    }
+
+    /* Cursor pulse */
+    .cursor {
+      position: fixed;
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      border: 2px solid rgba(0,255,209,0.8);
+      box-shadow: 0 0 10px rgba(0,255,209,0.55);
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      transition: transform 0.08s ease-out;
+      animation: cursorPulse 1.8s infinite;
+    }
+    @keyframes cursorPulse {
+      0%, 100% { box-shadow: 0 0 10px rgba(0,255,209,0.55); }
+      50% { box-shadow: 0 0 22px rgba(0,255,209,0.85); }
+    }
+
+    /* Parallax container */
+    .stage {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+</head>
+<body>
+  <div class="backdrop"></div>
+
+  <div class="stage" id="stage">
+    <h1 class="title glitch" data-text="Neon Drift">Neon Drift</h1>
+    <p class="tagline">A living canvas of light — move your mouse to bend the city’s glow.</p>
+
+    <div class="grid">
+      <div class="card">
+        <h3>Reactive glow</h3>
+        <p>Subtle parallax and neon strokes react to your movement, giving depth without heavy WebGL.</p>
+      </div>
+      <div class="card">
+        <h3>Glitch aesthetic</h3>
+        <p>Layered chromatic text creates a tasteful glitch effect for a cyberpunk vibe.</p>
+      </div>
+      <div class="card">
+        <h3>Floating orbs</h3>
+        <p>Procedural orbs drift across the scene, blending colors with screen-mode luminosity.</p>
+      </div>
+      <div class="card">
+        <h3>Soft UI</h3>
+        <p>Glass panels with blurred backgrounds and neon edges keep things crisp yet dreamy.</p>
+      </div>
+      <div class="card">
+        <h3>Accessible motion</h3>
+        <p>Animations favor comfort—slow easing, low amplitude, and fall back gracefully on mobile.</p>
+      </div>
+      <div class="card">
+        <h3>Minimal JS</h3>
+        <p>Just enough JavaScript for interaction; most visuals are pure CSS for performance.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">Tip: Move your mouse or tilt your phone — the scene responds.</div>
+  <div class="cursor" id="cursor"></div>
+
+  <script>
+    // Create floating orbs
+    const orbCount = 18;
+    const stage = document.getElementById('stage');
+    for (let i = 0; i < orbCount; i++) {
+      const o = document.createElement('div');
+      o.className = 'orb';
+      // Random position
+      o.style.left = Math.random() * 100 + 'vw';
+      o.style.top  = Math.random() * 100 + 'vh';
+      // Random animation offset and size
+      o.style.animationDelay = (Math.random() * 8) + 's';
+      o.style.transform = `translate(${Math.random()*20-10}px, ${Math.random()*20-10}px)`;
+      stage.appendChild(o);
+    }
+
+    // Interactive parallax + gradient warp
+    const backdrop = document.querySelector('.backdrop');
+    const cursor = document.getElementById('cursor');
+    let mx = 0, my = 0;
+
+    function handlePointer(x, y) {
+      mx = x; my = y;
+
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      const nx = (x / w) - 0.5; // -0.5 to 0.5
+      const ny = (y / h) - 0.5;
+
+      // Move cursor
+      cursor.style.left = x + 'px';
+      cursor.style.top = y + 'px';
+      cursor.style.transform = `translate(-50%, -50%) scale(${1 + Math.hypot(nx, ny) * 0.2})`;
+
+      // Warp backdrop gradients
+      const px1 = 70 + nx * 12;
+      const py1 = 20 + ny * 8;
+      const px2 = 20 - nx * 10;
+      const py2 = 80 - ny * 6;
+
+      backdrop.style.background =
+        `radial-gradient(1200px 600px at ${px1}% ${py1}%, rgba(91,134,229,0.18), transparent 60%),` +
+        `radial-gradient(1000px 600px at ${px2}% ${py2}%, rgba(255,60,172,0.12), transparent 60%)`;
+
+      // Subtle parallax on cards
+      document.querySelectorAll('.card').forEach((card, i) => {
+        const depth = (i % 3 + 1) * 0.6;
+        card.style.transform = `translate(${nx * depth * 10}px, ${ny * depth * 8 - 6}px)`;
+      });
+    }
+
+    window.addEventListener('mousemove', (e) => handlePointer(e.clientX, e.clientY), { passive: true });
+    window.addEventListener('touchmove', (e) => {
+      const t = e.touches[0];
+      if (t) handlePointer(t.clientX, t.clientY);
+    }, { passive: true });
+
+    // Gentle auto motion if idle
+    let idle = true;
+    let t = 0;
+    setInterval(() => {
+      if (idle) {
+        t += 0.016;
+        const x = window.innerWidth  * (0.5 + Math.sin(t * 0.4) * 0.15);
+        const y = window.innerHeight * (0.5 + Math.cos(t * 0.3) * 0.12);
+        handlePointer(x, y);
+      }
+    }, 16);
+
+    ['mousemove','touchstart','scroll','keydown'].forEach(evt =>
+      window.addEventListener(evt, () => { idle = false; }, { passive: true })
+    );
+  </script>
+</body>
+</html>
